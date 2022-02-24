@@ -1,0 +1,16 @@
+# Use Nginx Alpine image
+FROM nginx:stable-alpine
+RUN apk add bash
+
+## Copy Nginx configuration
+RUN rm -rf /etc/nginx/conf.d
+COPY .docker/Viewer-v2.x /etc/nginx/conf.d
+COPY .docker/Viewer-v2.x/entrypoint.sh /
+COPY ./platform/viewer/dist /usr/share/nginx/html
+EXPOSE 80
+EXPOSE 443
+
+## Change entrypoint permissions and run
+RUN chmod 777 /entrypoint.sh
+ENTRYPOINT ["/entrypoint.sh"]
+CMD ["nginx", "-g", "daemon off;"]
